@@ -1,10 +1,7 @@
 const SequelizeSlugify = require("sequelize-slugify");
 module.exports = (sequelize, DataTypes) => {
-  const FoodCategory = sequelize.define("FoodCategory", {
+  const IngredientModel = sequelize.define("Ingredient", {
     name: {
-      type: DataTypes.STRING,
-    },
-    image: {
       type: DataTypes.STRING,
     },
     slug: {
@@ -12,8 +9,8 @@ module.exports = (sequelize, DataTypes) => {
       unique: true,
     },
   });
-  SequelizeSlugify.slugifyModel(FoodCategory, {
+  SequelizeSlugify.slugifyModel(IngredientModel, {
     source: ["name"],
   });
-  return FoodCategory;
+  return IngredientModel;
 };
