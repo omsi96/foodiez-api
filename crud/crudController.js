@@ -1,12 +1,15 @@
 class CRUDController {
-  constructor(ITEM, item) {
+  constructor(ITEM, item, listOptions = {}) {
     this.ITEM = ITEM; // Model used for crud methods
     this.item = item; // String represents the name of the model
+    this.listOptions = listOptions;
   }
   // CREATE
   create = async (req, res) => {
+    console.log("REQUEST HAS BEEN RECIEVED WITH PARAMS: ", req.params);
     try {
-      const newItem = await this.ITEM.create(req.body);
+      // Adding all parameters in url to the body
+      const newItem = await this.ITEM.create({ ...req.body, ...req.params });
       res.status(201).json(newItem);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -22,6 +25,21 @@ class CRUDController {
       if (foundItem) {
         await foundItem.update(req.body);
         res.status(202).json({ message: "Updated!", payload: foundItem });
+      } else {
+        res.status(404).json({ message: `${this.item} Not Found` });
+      }
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
+  // GET SINGLE
+  getSingle = async (req, res) => {
+    const { id } = req.params;
+    console.log(`Got ${this.item} id:`, id);
+    try {
+      const foundItem = await this.ITEM.findByPk(id);
+      if (foundItem) {
+        res.status(200).json(foundItem);
       } else {
         res.status(404).json({ message: `${this.item} Not Found` });
       }
@@ -48,7 +66,7 @@ class CRUDController {
   // LIST
   list = async (req, res) => {
     try {
-      const allItems = await this.ITEM.findAll();
+      const allItems = await this.ITEM.findAll(this.listOptions);
       res.json(allItems);
     } catch (error) {
       res.status(500).json({ message: error.message });

@@ -6,6 +6,7 @@ class CRUDRouter extends express.Router {
     console.log("My CRUD Controller:", crudController);
     this.get("/", crudController.list);
     this.post("/create", crudController.create);
+    this.get("/:id", crudController.getSingle);
     this.put("/:id", crudController.update);
     this.delete("/:id", crudController.destory);
   }
